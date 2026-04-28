@@ -1,0 +1,21 @@
+# Java / Maven
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+
+# Logs
+*.log
+hs_err_pid*
+replay_pid*
+
+# System files
+.DS_Store
+
+# Node modules
+node_modules/
+
+# Temp/test
+temp_disabled/

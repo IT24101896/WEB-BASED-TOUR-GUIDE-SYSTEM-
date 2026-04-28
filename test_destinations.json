@@ -1,0 +1,21 @@
+{
+  "id": 7,
+  "name": "Unawatuna Beach",
+  "lat": 6.008096,
+  "lng": 80.245218,
+  "safetyRisk": 3.0
+}
+{
+  "id": 8,
+  "name": "Mirissa Beach",
+  "lat": 5.943542,
+  "lng": 80.456153,
+  "safetyRisk": 4.0
+}
+{
+  "id": 9,
+  "name": "Arugam Bay",
+  "lat": 6.839338,
+  "lng": 81.816752,
+  "safetyRisk": 5.0
+}

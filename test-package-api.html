@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Package Creation API Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Generate Package ID</h2>
+        <button onclick="testGeneratePackageId()">Generate Package ID</button>
+        <div id="test1-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Calculate Package Price</h2>
+        <button onclick="testPriceCalculation()">Calculate Price for Beach Destinations</button>
+        <div id="test2-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Create Package (Mock Route Data)</h2>
+        <button onclick="testPackageCreation()">Create Test Package</button>
+        <div id="test3-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Results Summary</h2>
+        <div id="summary"></div>
+    </div>
+
+    <script>
+        const testResults = {};
+        
+        async function testGeneratePackageId() {
+            try {
+                const response = await fetch('/api/packages/generate-id');
+                const result = await response.json();
+                
+                const resultDiv = document.getElementById('test1-result');
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Package ID Generated: ${result.packageId}</div>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                    testResults.packageId = true;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Failed: ${result.message}</div>`;
+                    testResults.packageId = false;
+                }
+            } catch (error) {
+                document.getElementById('test1-result').innerHTML = 
+                    `<div class="error">❌ Error: ${error.message}</div>`;
+                testResults.packageId = false;
+            }
+            updateSummary();
+        }
+        
+        async function testPriceCalculation() {
+            try {
+                // Use actual beach destination IDs from the database
+                const beachDestinationIds = [19, 20, 21]; // Nilaveli, Trincomalee Beach, Arugam Bay
+                const response = await fetch('/api/packages/calculate-price', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ destinationIds: beachDestinationIds }),
+                });
+                
+                const result = await response.json();
+                
+                const resultDiv = document.getElementById('test2-result');
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Price Calculated: $${result.price} ${result.currency}</div>
+                        <div>Destinations: IDs ${beachDestinationIds.join(', ')}</div>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                    testResults.priceCalculation = true;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Failed: ${result.message}</div>`;
+                    testResults.priceCalculation = false;
+                }
+            } catch (error) {
+                document.getElementById('test2-result').innerHTML = 
+                    `<div class="error">❌ Error: ${error.message}</div>`;
+                testResults.priceCalculation = false;
+            }
+            updateSummary();
+        }
+        
+        async function testPackageCreation() {
+            try {
+                // Mock route data similar to what frontend sends
+                const mockRouteData = {
+                    destinations: [
+                        { id: 19, name: "Nilaveli Beach", lat: 8.6833, lng: 81.25 },
+                        { id: 20, name: "Uppuveli Beach", lat: 8.6667, lng: 81.2333 },
+                        { id: 21, name: "Arugam Bay", lat: 6.8422, lng: 81.8289 }
+                    ],
+                    optimizedRoute: {
+                        distance: 245.5,
+                        estimatedTime: 4.5,
+                        order: [0, 1, 2]
+                    },
+                    tourName: "Eastern Beach Paradise Tour"
+                };
+                
+                const packageDetails = {
+                    name: "Eastern Beach Paradise Package",
+                    description: "Amazing beach tour along Sri Lanka's eastern coast",
+                    duration: "3 days",
+                    maxGroupSize: 8,
+                    inclusions: "Transportation, guide, beach activities",
+                    exclusions: "Meals, personal expenses",
+                    terms: "Standard booking terms apply"
+                };
+                
+                const response = await fetch('/api/packages/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        routeData: mockRouteData,
+                        packageDetails: packageDetails
+                    }),
+                });
+                
+                const result = await response.json();
+                
+                const resultDiv = document.getElementById('test3-result');
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Package Created Successfully!</div>
+                        <div>Package ID: ${result.package.packageId}</div>
+                        <div>Price: $${result.package.price}</div>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                    testResults.packageCreation = true;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Failed: ${result.message}</div>`;
+                    testResults.packageCreation = false;
+                }
+            } catch (error) {
+                document.getElementById('test3-result').innerHTML = 
+                    `<div class="error">❌ Error: ${error.message}</div>`;
+                testResults.packageCreation = false;
+            }
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summary');
+            const totalTests = Object.keys(testResults).length;
+            const passedTests = Object.values(testResults).filter(Boolean).length;
+            
+            if (totalTests > 0) {
+                summaryDiv.innerHTML = `
+                    <div><strong>Tests Passed: ${passedTests}/${totalTests}</strong></div>
+                    <div>Package ID Generation: ${testResults.packageId ? '✅' : '❌'}</div>
+                    <div>Price Calculation: ${testResults.priceCalculation ? '✅' : '❌'}</div>
+                    <div>Package Creation: ${testResults.packageCreation ? '✅' : '❌'}</div>
+                `;
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('test1-result').innerHTML = '';
+            document.getElementById('test2-result').innerHTML = '';
+            document.getElementById('test3-result').innerHTML = '';
+            document.getElementById('summary').innerHTML = '';
+            Object.keys(testResults).forEach(key => delete testResults[key]);
+        }
+    </script>
+    
+    <div class="test-section">
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+</body>
+</html>

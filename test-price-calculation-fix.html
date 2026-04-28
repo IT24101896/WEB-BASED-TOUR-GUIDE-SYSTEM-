@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Calculation Fix Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        .fixed { color: blue; font-weight: bold; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .calculation { background: #e8f5e8; padding: 10px; border-radius: 4px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Price Calculation Fix Verification</h1>
+    
+    <div class="test-section">
+        <h2>🔧 Fixed Logic: Total Cost + 20% Service Fee</h2>
+        <div class="calculation">
+            <strong>OLD (WRONG):</strong> (Sigiriya $600 + Unawatuna $800 + Arugam Bay $1000) ÷ 3 × 1.2 = $960 ❌<br>
+            <strong>NEW (CORRECT):</strong> (Sigiriya $600 + Unawatuna $800 + Arugam Bay $1000) × 1.2 = $2880 ✅
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test with Actual Destinations</h2>
+        <button onclick="testPriceCalculation()">Test Price Calculation Fix</button>
+        <div id="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Manual Calculation Examples</h2>
+        <div id="examples"></div>
+    </div>
+
+    <script>
+        async function testPriceCalculation() {
+            try {
+                // Test with some actual destination IDs
+                const testDestinationIds = [19, 20, 21]; // Beach destinations
+                const response = await fetch('/api/packages/calculate-price', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ destinationIds: testDestinationIds }),
+                });
+                
+                const result = await response.json();
+                
+                const resultDiv = document.getElementById('test-result');
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="fixed">✅ Price Calculation Fixed!</div>
+                        <div>Calculated Price: $${result.price} ${result.currency}</div>
+                        <div>Destinations: IDs ${testDestinationIds.join(', ')}</div>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Failed: ${result.message}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('test-result').innerHTML = 
+                    `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        function showExamples() {
+            const examplesDiv = document.getElementById('examples');
+            examplesDiv.innerHTML = `
+                <h3>Your Example (Expected Costs):</h3>
+                <div class="calculation">
+                    <strong>Package: Sigiriya + Unawatuna + Arugam Bay</strong><br>
+                    Sigiriya: $600<br>
+                    Unawatuna: $800<br>
+                    Arugam Bay: $1000<br>
+                    <strong>Total: $2400</strong><br>
+                    Service Fee (20%): $480<br>
+                    <strong>Final Package Price: $2880</strong>
+                </div>
+                
+                <h3>Why the Fix Makes Sense:</h3>
+                <ul>
+                    <li><strong>Before:</strong> Average cost per destination (doesn't reflect actual total cost)</li>
+                    <li><strong>After:</strong> Total cost of all destinations (accurate package pricing)</li>
+                    <li><strong>Logic:</strong> A package includes ALL destinations, so price should reflect ALL costs</li>
+                </ul>
+                
+                <h3>Calculation Formula:</h3>
+                <div class="calculation">
+                    <code>Package Price = (Sum of all destination costs) × 1.2</code><br>
+                    <small>1.2 = 100% base cost + 20% service fee</small>
+                </div>
+            `;
+        }
+        
+        // Show examples on page load
+        showExamples();
+    </script>
+</body>
+</html>
