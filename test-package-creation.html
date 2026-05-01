@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Creation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Package Creation Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: SessionStorage Data Setup</h2>
+        <button onclick="setupTestData()">Setup Test Route Data</button>
+        <div id="test1-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Verify Package Creation Page Access</h2>
+        <button onclick="testPackagePage()">Test Package Page Route</button>
+        <div id="test2-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Button Text Change</h2>
+        <p>Manual verification needed:</p>
+        <ol>
+            <li>Navigate to route planning page</li>
+            <li>Create a route with destinations</li>
+            <li>Verify button shows "📦 Create a Package with This Route"</li>
+            <li>Click button and verify it navigates to package creation page</li>
+        </ol>
+    </div>
+
+    <script>
+        function setupTestData() {
+            const testData = {
+                destinations: [
+                    { id: 1, name: "Colombo", lat: 6.9271, lng: 79.8612 },
+                    { id: 2, name: "Kandy", lat: 7.2906, lng: 80.6337 },
+                    { id: 3, name: "Galle", lat: 6.0535, lng: 80.2200 }
+                ],
+                optimizedRoute: {
+                    distance: 245.5,
+                    estimatedTime: 4.5,
+                    order: [0, 1, 2]
+                },
+                tourName: "Colombo → Kandy → Galle Tour"
+            };
+            
+            sessionStorage.setItem('routeOptimizationData', JSON.stringify(testData));
+            
+            const result = document.getElementById('test1-result');
+            result.innerHTML = '<span class="success">✅ Test route data stored in sessionStorage</span>';
+            
+            // Verify data was stored
+            const stored = sessionStorage.getItem('routeOptimizationData');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                console.log('Stored data:', parsed);
+                result.innerHTML += '<br><small>Check console for stored data details</small>';
+            }
+        }
+        
+        function testPackagePage() {
+            const testData = sessionStorage.getItem('routeOptimizationData');
+            const result = document.getElementById('test2-result');
+            
+            if (testData) {
+                result.innerHTML = '<span class="success">✅ Route data available for package creation</span>';
+                result.innerHTML += '<br><button onclick="window.open(\'/package-creation\', \'_blank\')">Open Package Creation Page</button>';
+            } else {
+                result.innerHTML = '<span class="error">❌ No route data found. Please run Test 1 first.</span>';
+            }
+        }
+        
+        // Clear test data function
+        function clearTestData() {
+            sessionStorage.removeItem('routeOptimizationData');
+            document.getElementById('test1-result').innerHTML = '';
+            document.getElementById('test2-result').innerHTML = '';
+        }
+    </script>
+    
+    <div class="test-section">
+        <button onclick="clearTestData()">Clear Test Data</button>
+    </div>
+</body>
+</html>

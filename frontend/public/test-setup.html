@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup Test Data</title>
+</head>
+<body>
+    <h2>Setting up test route data...</h2>
+    <script>
+        const testRouteData = {
+            tourName: "Test Cultural Tour",
+            destinations: [
+                { id: 27, name: "Ritigala Forest Monastery", location: "Anuradhapura, Sri Lanka" },
+                { id: 28, name: "Wilpattu National Park", location: "Puttalam, Sri Lanka" },
+                { id: 29, name: "Udawalawe National Park", location: "Monaragala, Sri Lanka" }
+            ],
+            optimizedRoute: {
+                distance: 150.5,
+                estimatedTime: 8.5
+            }
+        };
+        
+        // Save to sessionStorage
+        sessionStorage.setItem('routeOptimizationData', JSON.stringify(testRouteData));
+        
+        console.log('Test route data added to sessionStorage');
+        
+        // Redirect to package creation page after 2 seconds
+        setTimeout(() => {
+            window.location.href = '/package-creation';
+        }, 2000);
+    </script>
+    <p>Redirecting to package creation page in 2 seconds...</p>
+    <p><a href="/package-creation">Go now</a></p>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Color Fix Verification</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: green; }
+        .fixed { color: green; font-weight: bold; }
+        .route-summary-demo {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            color: black;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            color: black;
+        }
+        .destinations-list {
+            margin-top: 8px;
+            padding-left: 20px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Color Fix Verification</h1>
+    
+    <div class="test-section">
+        <h2>✅ Fixed Route Summary Section</h2>
+        <p>The following text should now be visible in black:</p>
+        
+        <div class="route-summary-demo">
+            <h3>🗺️ Route Summary</h3>
+            <div class="summary-grid">
+                <div>
+                    <strong>Tour Name:</strong> Colombo → Kandy → Galle Tour
+                </div>
+                <div>
+                    <strong>Destinations:</strong> 3
+                </div>
+                <div>
+                    <strong>Distance:</strong> 245.50 km
+                </div>
+                <div>
+                    <strong>Duration:</strong> 4.5 hours
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px; color: black;">
+                <strong>Destinations:</strong>
+                <ul class="destinations-list">
+                    <li>Unawatuna Beach</li>
+                    <li>Mirissa Beach</li>
+                    <li>Uppuveli Beach</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="fixed">✅ All text elements now have explicit color: 'black' styling</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Changes Applied</h2>
+        <ul>
+            <li><strong>route-summary-section</strong>: Added color: 'black'</li>
+            <li><strong>summary-grid</strong>: Added color: 'black'</li>
+            <li><strong>destinations list</strong>: Added color: 'black' to both container and ul</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test in Application</h2>
+        <p>To test the fix in the actual application:</p>
+        <ol>
+            <li>Navigate to route planning page</li>
+            <li>Create a route with destinations</li>
+            <li>Click "Create a Package with This Route"</li>
+            <li>Verify all text in Route Summary is now visible and black</li>
+        </ol>
+        <a href="/route-planning" target="_blank">Open Route Planning Page</a>
+    </div>
+</body>
+</html>
